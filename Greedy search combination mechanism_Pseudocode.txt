@@ -1,0 +1,28 @@
+Input:  
+    stock_length (available rebar length)  
+    lengths (list of required cut lengths)  
+    quantities (list of quantities needed for each length)
+
+Initialize patterns as empty list  
+Initialize remaining quantities as a copy of quantities
+
+while sum of remaining quantities > 0
+    Initialize an empty cutting pattern  
+    Set remaining_length = stock_length  
+    Create a temporary copy of remaining quantities
+
+    for each length in lengths sorted descending
+        while remaining_length >= length and temporary quantity > 0
+            Append length to current pattern  
+            Reduce remaining_length by length  
+            Decrement temporary quantity for this length  
+
+    if current pattern is empty  
+        break loop (no more feasible cuts)
+
+    Add current pattern and waste (stock_length - sum of pattern) to patterns  
+    Update remaining quantities by subtracting used lengths in current pattern
+
+return patterns, remaining quantities
+
+The greedy cutting pattern generation algorithm attempts to fulfill the required rebar lengths by iteratively selecting the longest possible length that fits within the remaining stock length. Starting with the full stock length, it repeatedly adds the largest feasible cut until no further cuts of that size or larger can be accommodated. It then proceeds to shorter lengths, continuing until all required quantities are assigned or no more cuts can be made. This method is simple and efficient but may not guarantee a globally optimal solution, as it makes locally optimal choices at each step without backtracking or exploring alternative combinations.
