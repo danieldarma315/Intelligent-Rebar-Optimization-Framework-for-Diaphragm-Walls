@@ -1,0 +1,52 @@
+Initialize the whales population Xi (i = 1, 2, ..., n) within [lmin, lmax] = [6.0 m, 12.0 m]
+
+Load required rebar lengths and quantities from a multiple-sheets input Spreadsheet file
+
+for each sheet in the input file
+    Extract required lengths and quantities
+
+    Calculate the fitness of each search agent:
+        - Call the greedy cutting function to generate a feasible cutting pattern
+        - Compute total waste and apply a penalty as the fitness value
+
+    X* = the best search agent (stock length with minimum total waste)
+
+    while (t < maximum number of iterations)
+        for each search agent
+            Update a, A, C, l, and p
+            if1 (p < 0.5)
+                if2 (|A| < 1)
+                    Update the position of the current search agent toward X*
+                else if2 (|A| ≥ 1)
+                    Select a random search agent (Xrand)
+                    Update the position of the current search agent toward Xrand
+                end if2
+            else if1 (p ≥ 0.5)
+                Update the position of the current search agent using the spiral equation
+            end if1
+
+            Ensure the updated position is within [lmin, lmax] and round to the nearest 0.1 m
+
+            Calculate the fitness of the updated search agent:
+                - Call the greedy cutting function to generate cutting patterns
+                - Compute total waste and apply penalty as the fitness value
+
+            if the fitness of the search agent < fitness of X*
+                Update X* with the new best solution
+            end if
+        end for
+        t = t + 1
+    end while
+
+    Calculate the final cutting pattern based on X*
+    Compute and display:
+        - Total waste
+        - Total number of bars needed
+        - Waste rate
+        - Cutting pattern summary
+
+    Save the optimized cutting pattern for the sheet to the multiple-sheets output Spreadsheet file
+
+end for
+
+return X* (optimal rebar special length for each sheet)
