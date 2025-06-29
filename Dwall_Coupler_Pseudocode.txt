@@ -1,0 +1,65 @@
+Load reference data from Sheet 1 (rebar specs, max length, coupler gaps, unit weights)
+Load rebar layout and quantity data from Sheet 2
+
+For each rebar section (layer):
+    Retrieve:
+        - Total bar length
+        - Rebar diameter
+        - Number of rebars in bundle
+
+    If maximum rebar length is undefined:
+        Set default maximum rebar length = 12000 mm
+
+    Calculate number of special-length rebars:
+        number_special = ceil(total_bar_length / max_rebar_length)
+
+    Select coupler gap based on diameter:
+        If diameter > 32:
+            gap = coupler gap for >h32
+        Else:
+            gap = coupler gap for <h32
+
+    Compute:
+        - Average bar length = total_bar_length / number_special
+        - End bar length = average - (gap / 2)
+        - Middle bar length = average - gap
+
+    If number_special == 2:
+        Use adjusted end bar length for both ends
+
+    Determine required special length:
+        required_length = max(end bar length, middle bar length)
+
+    Round up required_length to nearest 100 mm → purchasable_length
+
+    Retrieve or assign unit rebar weight based on diameter
+
+    Convert all lengths to meters
+
+    Compute:
+        - Total special bars = number_special × rebars in bundle
+        - Total end bars = 2 × rebars in bundle (or 2 if only 2 bars)
+        - Total middle bars = total bars - end bars
+
+    Calculate:
+        - Required weight = (end bars × unit weight × end length) +
+                            (middle bars × unit weight × middle length)
+        - Purchasable weight = total bars × unit weight × purchasable length
+        - Number of couplers = (number_special - 1) × rebars in bundle
+
+    Store all computed values in summary table
+
+End for
+
+Compute totals across all layers:
+    - Total special rebars
+    - Total required and purchased weights
+    - Total number of couplers
+
+Calculate waste rate:
+    waste_rate = (purchasable_weight - required_weight) / purchasable_weight
+
+Display summary table and waste rate
+Save summary table to Spreadsheet file
+
+Return total waste, weight efficiency, and coupler count
